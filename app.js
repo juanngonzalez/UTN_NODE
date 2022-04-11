@@ -5,19 +5,15 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 require('dotenv').config();
-var pool = require('./modelos/bd');
+var session = require('express-session');
 
-pool.query('select * from skates').then(function(resultados){
-  console.log(resultados);
-})
 
-pool.query('select * from trucks').then(function(resultados){
-  console.log(resultados);
-})
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var adminLogin = require('./routes/admin/admin');
+var adminRouter = require('./routes/admin/novedades');
+const async = require('hbs/lib/async');
 var app = express();
 
 // view engine setup
@@ -30,9 +26,30 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  secret: 'PW2021awqyeudj',
+  cookie: {maxAge: null},
+  resave: false,
+  saveUninitialized: true
+}));
+
+secured = async (req, res, next) => {
+  try{
+    console.log(req.session.id_user);
+    if(req.session.id_user){
+      next();
+    } else {
+      res.redirect('/admin/login');
+    }
+  } catch(error){
+    console.log(error);
+  }
+}
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/admin/login', adminLogin);
+app.use('/admin/novedades',secured, adminRouter);
 
 
 // catch 404 and forward to error handler
