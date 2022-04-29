@@ -11,11 +11,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/logout', function(req, res, next){
   req.session.destroy();
-  res.render('admin/login',{
-    layout: 'admin/layout',
-   
-  });
-  
+  res.redirect('/admin/login');
 });
 
 router.post('/', async(req, res, next) => {
