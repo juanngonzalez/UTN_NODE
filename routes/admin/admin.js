@@ -1,8 +1,9 @@
 var express = require('express');
 const async = require('hbs/lib/async');
 var router = express.Router();
-var usuariosModel = require('./../../modelos/usuariosModel')
+var usuariosModel = require('./../../modelos/usersModel')
 /* GET home page. */
+
 router.get('/', function(req, res, next) {
   res.render('admin/login', {
     layout: 'admin/layout'
@@ -24,7 +25,7 @@ router.post('/', async(req, res, next) => {
     if(data != undefined){
       req.session.id_user = data.id_user;
       req.session.nombre = data.user;
-      res.redirect('/admin/novedades');
+      res.redirect('/admin/products');
     } else {
       res.render('admin/login' , {
         layout: 'admin/layout',
