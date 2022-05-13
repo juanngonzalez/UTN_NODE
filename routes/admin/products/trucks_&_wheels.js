@@ -8,44 +8,45 @@ const destroy = util.promisify(cloudinary.uploader.destroy);
 
 router.get('/', async function (req, res, next) {
 
-   var skates = await productsModel.getSkates();
+   var trucksAndWheels = await productsModel.getTrucksAndWheels();
 
-   skates = skates.map(skate => {
-      if (skate.img_id) {
-         const image = cloudinary.image(skate.img_id, {
+     trucksAndWheels = trucksAndWheels.map(trucksAndWheels => {
+      if (trucksAndWheels.img_id) {
+         const image = cloudinary.image(trucksAndWheels.img_id, {
             width: 100,
             height: 100,
             //crop: 'fill'
          });
          return {
-            ...skate,
+            ...trucksAndWheels,
             image
          }
       } else {
          return {
-            ...skate,
+            ...trucksAndWheels,
             image: ""
          }
       }
    })
 
-   res.render('admin/products/skates/skates_list', {
+   res.render('admin/products/trucks_&_wheels/T&W_list', {
       layout: 'admin/layout',
       usuario: req.session.nombre,
-      skates
-      
+      trucksAndWheels
+
    });
 })
 
-router.get('/add_skate', (req, res, next) => {
-   res.render('admin/products/skates/add_skate', {
+
+router.get('/add_T&W', (req, res, next) => {
+   res.render('admin/products/trucks_&_wheels/add_T&W', {
       layout: 'admin/layout',
       usuario: req.session.nombre
    })
 })
 
 
-router.post('/add_skate', async (req, res, next) => {
+router.post('/add_T&W', async (req, res, next) => {
    try {
       var img_id = "";
       if (req.files && Object.keys(req.files).length > 0) {
@@ -54,13 +55,13 @@ router.post('/add_skate', async (req, res, next) => {
       }
 
       if (req.body.name != "" && req.body.price > 0 && req.body.stock > 0) {
-         await productsModel.insertSkate({
+         await productsModel.insertTrucksAndWheels({
             ...req.body,
             img_id
          });
-         res.redirect('/admin/products/skates/skates_list')
+         res.redirect('/admin/products/trucks_&_wheels/T&W_list')
       } else {
-         res.render('admin/products/skates/add_skate', {
+         res.render('admin/products/trucks_&_wheels/add_T&W', {
             usuario: req.session.nombre,
             layout: 'admin/layout',
             error: true,
@@ -69,7 +70,7 @@ router.post('/add_skate', async (req, res, next) => {
       }
    } catch (error) {
       console.log(error)
-      res.render('admin/products/skates/add_skate', {
+      res.render('admin/products/trucks_&_wheels/add_T&W', {
          usuario: req.session.nombre,
          layout: 'admin/layout',
          error: true,
@@ -80,17 +81,17 @@ router.post('/add_skate', async (req, res, next) => {
 
 router.get('/delete/:id_product', async (req, res, next) => {
    var id = req.params.id_product;
-   await productsModel.deleteSkate(id);
-   res.redirect('/admin/products/skates/skates_list')
+   await productsModel.deleteTrucksAndWheels(id);
+   res.redirect('/admin/products/trucks_&_wheels/T&W_list')
 })
 
 router.get('/update/:id_product', async (req, res, next) => {
    var id = req.params.id_product;
-   var skate = await productsModel.getSkateById(id);
-   res.render('admin/products/skates/update', {
+   var trucksAndWheels = await productsModel.getTrucksAndWheelsById(id);
+   res.render('admin/products/trucks_&_wheels/update', {
       layout: 'admin/layout',
       usuario: req.session.nombre,
-      skate
+      trucksAndWheels
    })
 })
 
@@ -118,10 +119,10 @@ router.post('/update', async (req, res, next) => {
          stock: req.body.stock,
          img_id
       }
-      await productsModel.updateSkateById(obj, req.body.id_product);
-      res.redirect('/admin/products/skates/skates_list');
+      await productsModel.updateTrucksAndWheelsById(obj, req.body.id_product);
+      res.redirect('/admin/products/trucks_&_wheels/T&W_list');
    } catch (error) {
-      res.render('admin/products/skates/update', {
+      res.render('admin/products/trucks_&_wheels/update', {
          usuario: req.session.nombre,
          layout: 'admin/layout',
          error: true,
@@ -129,14 +130,5 @@ router.post('/update', async (req, res, next) => {
       })
    }
 })
-
-
-
-
-
-
-
-
-
 
 module.exports = router;

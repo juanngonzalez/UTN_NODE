@@ -8,44 +8,45 @@ const destroy = util.promisify(cloudinary.uploader.destroy);
 
 router.get('/', async function (req, res, next) {
 
-   var skates = await productsModel.getSkates();
+   var clothes = await productsModel.getClothes();
 
-   skates = skates.map(skate => {
-      if (skate.img_id) {
-         const image = cloudinary.image(skate.img_id, {
+   clothes = clothes.map(clothes => {
+      if (clothes.img_id) {
+         const image = cloudinary.image(clothes.img_id, {
             width: 100,
             height: 100,
             //crop: 'fill'
          });
          return {
-            ...skate,
+            ...clothes,
             image
          }
       } else {
          return {
-            ...skate,
+            ...clothes,
             image: ""
          }
       }
    })
 
-   res.render('admin/products/skates/skates_list', {
+   res.render('admin/products/clothes/clothes_list', {
       layout: 'admin/layout',
       usuario: req.session.nombre,
-      skates
-      
+      clothes
+
    });
 })
 
-router.get('/add_skate', (req, res, next) => {
-   res.render('admin/products/skates/add_skate', {
+
+router.get('/add_clothes', (req, res, next) => {
+   res.render('admin/products/clothes/add_clothes', {
       layout: 'admin/layout',
       usuario: req.session.nombre
    })
 })
 
 
-router.post('/add_skate', async (req, res, next) => {
+router.post('/add_clothes', async (req, res, next) => {
    try {
       var img_id = "";
       if (req.files && Object.keys(req.files).length > 0) {
@@ -54,13 +55,13 @@ router.post('/add_skate', async (req, res, next) => {
       }
 
       if (req.body.name != "" && req.body.price > 0 && req.body.stock > 0) {
-         await productsModel.insertSkate({
+         await productsModel.insertClothes({
             ...req.body,
             img_id
          });
-         res.redirect('/admin/products/skates/skates_list')
+         res.redirect('/admin/products/clothes/clothes_list')
       } else {
-         res.render('admin/products/skates/add_skate', {
+         res.render('admin/products/clothes/add_clothes', {
             usuario: req.session.nombre,
             layout: 'admin/layout',
             error: true,
@@ -69,7 +70,7 @@ router.post('/add_skate', async (req, res, next) => {
       }
    } catch (error) {
       console.log(error)
-      res.render('admin/products/skates/add_skate', {
+      res.render('admin/products/clothes/add_clothes', {
          usuario: req.session.nombre,
          layout: 'admin/layout',
          error: true,
@@ -80,17 +81,17 @@ router.post('/add_skate', async (req, res, next) => {
 
 router.get('/delete/:id_product', async (req, res, next) => {
    var id = req.params.id_product;
-   await productsModel.deleteSkate(id);
-   res.redirect('/admin/products/skates/skates_list')
+   await productsModel.deleteClothes(id);
+   res.redirect('/admin/products/clothes/clothes_list')
 })
 
 router.get('/update/:id_product', async (req, res, next) => {
    var id = req.params.id_product;
-   var skate = await productsModel.getSkateById(id);
-   res.render('admin/products/skates/update', {
+   var clothes = await productsModel.getClothesById(id);
+   res.render('admin/products/clothes/update', {
       layout: 'admin/layout',
       usuario: req.session.nombre,
-      skate
+      clothes
    })
 })
 
@@ -118,10 +119,10 @@ router.post('/update', async (req, res, next) => {
          stock: req.body.stock,
          img_id
       }
-      await productsModel.updateSkateById(obj, req.body.id_product);
-      res.redirect('/admin/products/skates/skates_list');
+      await productsModel.updateClothesById(obj, req.body.id_product);
+      res.redirect('/admin/products/clothes/clothes_list');
    } catch (error) {
-      res.render('admin/products/skates/update', {
+      res.render('admin/products/clothes/update', {
          usuario: req.session.nombre,
          layout: 'admin/layout',
          error: true,
@@ -129,14 +130,5 @@ router.post('/update', async (req, res, next) => {
       })
    }
 })
-
-
-
-
-
-
-
-
-
 
 module.exports = router;

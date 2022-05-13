@@ -1,0 +1,38 @@
+<div class="container" style="margin-top: 100px;display:flex;justify-content:center;">
+  <div class="row" style="width:500px;">
+    <form action="/admin/products/trucks_&_wheels/T&W_list/update" method="post" enctype="multipart/form-data" style="display:flex;flex-direction:column;justify-content:center;">
+      <input type="hidden" value="{{trucksAndWheels.id_product}}" name="id_product">
+      <div class="mb-3 row">
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name="name" value="{{trucksAndWheels.name}}">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <div class="col-sm-10">
+          <input type="number" class="form-control" name="price" value="{{trucksAndWheels.price}}">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <div class="col-sm-10">
+          <input type="number" class="form-control" name="stock" value="{{trucksAndWheels.stock}}">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <div class="col-sm-10">
+          <label>Imagen <input type="file" name="image" ></label>
+        </div>
+        <div class="col-sm-10">
+           <label for=""><input type="checkbox" name="img_delete" id="img_delete" value="1">
+           Eliminar imagen actual
+           </label>
+           <input type="hidden" name="img_origin" value="{{trucksAndWheels.img_id}}">
+        </div>
+      </div>
+
+      <button type="submit" class="btn" style="border: grey 1px solid;width: 100px;">AGREGAR</button>
+    </form>
+    {{#if error}}
+      <p>{{message}}</p>
+    {{/if}}
+  </div>
+</div>

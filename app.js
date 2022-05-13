@@ -3,9 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var fileUpload = require('express-fileupload')
+
 
 require('dotenv').config();
+var fileUpload = require('express-fileupload')
 var session = require('express-session');
 
 
@@ -15,6 +16,8 @@ var usersRouter = require('./routes/users');
 var adminLogin = require('./routes/admin/admin');
 var adminRouter = require('./routes/admin/products');
 var adminSkates = require('./routes/admin/products/skates')
+var adminClothes = require('./routes/admin/products/clothes')
+var adminTrucksAndWheels = require('./routes/admin/products/trucks_&_wheels')
 const async = require('hbs/lib/async');
 var app = express();
 
@@ -27,6 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(fileUpload({
   useTempFiles: true,
   tempFileDir: '/tmp/'
@@ -52,16 +56,14 @@ secured = async (req, res, next) => {
   }
 }
 
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: '/tmp'
-}));
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin/login', adminLogin);
 app.use('/admin/products',secured, adminRouter);
-app.use('/admin/products/skates',secured, adminSkates)
+
+app.use('/admin/products/skates/skates_list',secured, adminSkates);
+app.use('/admin/products/clothes/clothes_list', secured, adminClothes);
+app.use('/admin/products/trucks_&_wheels/T&W_list', secured, adminTrucksAndWheels)
 
 
 // catch 404 and forward to error handler
